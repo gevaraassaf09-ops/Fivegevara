@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الديوان العسكري</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #1a2810 0%, #243318 100%);
+            color: #1a1a0e;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(200, 168, 75, 0.18);
+            margin-bottom: 30px;
+            border-right: 4px solid #c8a84b;
+        }
+
+        header h1 {
+            color: #243318;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+            border: 1px solid #e8dfc8;
+        }
+
+        .card h2 {
+            color: #243318;
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2::before {
+            content: '';
+            width: 4px;
+            height: 25px;
+            background: #c8a84b;
+            border-radius: 2px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: #243318;
+            color: #f9f4e8;
+            box-shadow: 0 2px 8px rgba(36, 51, 24, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #2e4020;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(36, 51, 24, 0.4);
+        }
+
+        .btn-success {
+            background: #2d5016;
+            color: #f9f4e8;
+        }
+
+        .btn-success:hover {
+            background: #3a6320;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #8a6a1a;
+            color: #f9f4e8;
+        }
+
+        .btn-warning:hover {
+            background: #b08929;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #8b1a1a;
+            color: #f9f4e8;
+        }
+
+        .btn-danger:hover {
+            background: #a82626;
+            transform: translateY(-2px);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e8dfc8;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #c8a84b;
+            box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .status-box {
+            background: #f9f4e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-right: 4px solid #c8a84b;
+        }
+
+        .status-box strong {
+            color: #243318;
+        }
+
+        .status-box span {
+            color: #666;
+            font-family: 'Courier New', monospace;
+        }
+
+        .backup-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .backup-item {
+            background: #f9f4e8;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-right: 3px solid #c8a84b;
+            transition: transform 0.2s;
+        }
+
+        .backup-item:hover {
+            transform: translateX(-5px);
+        }
+
+        .backup-info {
+            flex: 1;
+        }
+
+        .backup-name {
+            font-weight: bold;
+            color: #243318;
+            margin-bottom: 5px;
+        }
+
+        .backup-time {
+            font-size: 12px;
+            color: #999;
+            font-family: 'Courier New', monospace;
+        }
+
+        .backup-author {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .backup-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .backup-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+            min-width: auto;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4f1d4;
+            color: #1a4d1a;
+            border-right: 4px solid #2d5016;
+        }
+
+        .alert-error {
+            background: #f1d4d4;
+            color: #4d1a1a;
+            border-right: 4px solid #8b1a1a;
+        }
+
+        .alert-info {
+            background: #d4e8f1;
+            color: #1a3a4d;
+            border-right: 4px solid #243318;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #243318;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            background: #f9f4e8;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e8dfc8;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #c8a84b;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎖️ لوحة تحكم الديوان العسكري</h1>
+            <p>إدارة النسخ الاحتياطية والمزامنة مع GitHub</p>
+        </header>
+
+        <div id="alerts"></div>
+
+        <div class="grid">
+            <!-- قسم الحالة -->
+            <div class="card">
+                <h2>معلومات الخادم</h2>
+                <div id="status-content">
+                    <div class="loader"></div> جاري التحميل...
+                </div>
+            </div>
+
+            <!-- قسم المزامنة -->
+            <div class="card">
+                <h2>مزامنة GitHub</h2>
+                <div class="button-group">
+                    <button class="btn-success" onclick="syncToGithub()">
+                        📤 رفع التحديثات
+                    </button>
+                    <button class="btn-primary" onclick="syncFromGithub()">
+                        📥 جلب التحديثات
+                    </button>
+                </div>
+                <div id="sync-status" class="status-box" style="display:none;"></div>
+            </div>
+
+            <!-- قسم النسخ الاحتياطية الجديدة -->
+            <div class="card">
+                <h2>إنشاء نسخة احتياطية</h2>
+                <input type="text" id="backup-name" placeholder="اسم النسخة (مثال: قبل التحديث الكبير)" value="نسخة احتياطية">
+                <input type="text" id="backup-author" placeholder="اسم المشرف" value="المشرف">
+                <textarea id="backup-desc" placeholder="وصف النسخة (اختياري)"></textarea>
+                <div class="button-group">
+                    <button class="btn-primary" onclick="createBackup()">
+                        💾 إنشاء نسخة احتياطية
+                    </button>
+                </div>
+                <div id="backup-create-status"></div>
+            </div>
+
+            <!-- قسم النسخ الاحتياطية الموجودة -->
+            <div class="card">
+                <h2>النسخ الاحتياطية</h2>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="backup-count">-</span>
+                        <span class="stat-label">عدد النسخ</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="last-backup">-</span>
+                        <span class="stat-label">آخر نسخة</span>
+                    </div>
+                </div>
+                <div class="backup-list" id="backups-list">
+                    <div class="loader"></div> جاري التحميل...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin;
+
+        // تحميل حالة الخادم
+        function loadStatus() {
+            fetch(`${API_URL}/api/status`)
+                .then(r => r.json())
+                .then(data => {
+                    const versionInfo = data.version;
+                    const html = `
+                        <div class="status-box">
+                            <strong>حالة الخادم:</strong> ✅ نشط<br>
+                            <span>${new Date(data.server_time).toLocaleString('ar-EG')}</span>
+                        </div>
+                        <div class="status-box">
+                            <strong>آخر تعديل:</strong><br>
+                            <span>${new Date(versionInfo.last_modified).toLocaleString('ar-EG')}</span>
+                        </div>
+                        <div class="status-box">
+                            <strong>الوصف:</strong><br>
+                            <span>${versionInfo.description}</span>
+                        </div>
+                    `;
+                    document.getElementById('status-content').innerHTML = html;
+                    loadBackups();
+                })
+                .catch(e => showAlert('خطأ في تحميل البيانات: ' + e.message, 'error'));
+        }
+
+        // تحميل النسخ الاحتياطية
+        function loadBackups() {
+            fetch(`${API_URL}/api/list-backups`)
+                .then(r => r.json())
+                .then(data => {
+                    const backups = data.backups || [];
+                    document.getElementById('backup-count').textContent = backups.length;
+                    
+                    if (backups.length > 0) {
+                        const lastBackup = new Date(backups[0].timestamp);
+                        document.getElementById('last-backup').textContent = 
+                            lastBackup.toLocaleString('ar-EG', {month: 'short', day: 'numeric'});
+                    }
+
+                    if (backups.length === 0) {
+                        document.getElementById('backups-list').innerHTML = 
+                            '<p style="text-align: center; color: #999;">لا توجد نسخ احتياطية بعد</p>';
+                        return;
+                    }
+
+                    const html = backups.map((backup, index) => `
+                        <div class="backup-item">
+                            <div class="backup-info">
+                                <div class="backup-name">${backup.name}</div>
+                                <div class="backup-time">${new Date(backup.timestamp).toLocaleString('ar-EG')}</div>
+                                <div class="backup-author">المشرف: ${backup.author}</div>
+                            </div>
+                            <div class="backup-actions">
+                                <button class="btn-primary" onclick="restoreBackup('${backup.id}')">
+                                    ↩️ استعادة
+                                </button>
+                                <button class="btn-warning" onclick="downloadBackup('${backup.id}')">
+                                    ⬇️ تحميل
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                    document.getElementById('backups-list').innerHTML = html;
+                })
+                .catch(e => console.error('خطأ:', e));
+        }
+
+        // إنشاء نسخة احتياطية
+        function createBackup() {
+            const name = document.getElementById('backup-name').value || 'نسخة احتياطية';
+            const author = document.getElementById('backup-author').value || 'غير معروف';
+            const desc = document.getElementById('backup-desc').value;
+
+            const statusEl = document.getElementById('backup-create-status');
+            statusEl.innerHTML = '<div class="loader"></div> جاري إنشاء النسخة...';
+
+            fetch(`${API_URL}/api/create-backup`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, author, description: desc})
+            })
+            .then(r => r.json())
+            .then(data => {
+                showAlert('✅ ' + data.message, 'success');
+                document.getElementById('backup-name').value = 'نسخة احتياطية';
+                document.getElementById('backup-desc').value = '';
+                statusEl.innerHTML = '';
+                loadBackups();
+            })
+            .catch(e => showAlert('❌ خطأ: ' + e.message, 'error'));
+        }
+
+        // استعادة نسخة احتياطية
+        function restoreBackup(backupId) {
+            if (!confirm('هل أنت متأكد من استعادة هذه النسخة؟\nسيتم حفظ النسخة الحالية تلقائياً.')) return;
+
+            fetch(`${API_URL}/api/restore-backup/${backupId}`, {method: 'POST'})
+                .then(r => r.json())
+                .then(data => {
+                    showAlert('✅ تم الاستعادة بنجاح', 'success');
+                    setTimeout(() => location.reload(), 1000);
+                })
+                .catch(e => showAlert('❌ خطأ: ' + e.message, 'error'));
+        }
+
+        // تحميل النسخة الاحتياطية
+        function downloadBackup(backupId) {
+            window.location.href = `${API_URL}/api/get-backup/${backupId}`;
+        }
+
+        // مزامنة مع GitHub
+        function syncToGithub() {
+            const statusEl = document.getElementById('sync-status');
+            statusEl.style.display = 'block';
+            statusEl.innerHTML = '<div class="loader"></div> جاري الرفع...';
+
+            fetch(`${API_URL}/api/git-sync`, {method: 'POST'})
+                .then(r => r.json())
+                .then(data => {
+                    statusEl.innerHTML = `✅ ${data.message}<br><small>${new Date().toLocaleString('ar-EG')}</small>`;
+                    showAlert('✅ تم الرفع إلى GitHub بنجاح', 'success');
+                })
+                .catch(e => {
+                    statusEl.innerHTML = '❌ خطأ في الرفع';
+                    showAlert('❌ خطأ: ' + e.message, 'error');
+                });
+        }
+
+        // جلب من GitHub
+        function syncFromGithub() {
+            const statusEl = document.getElementById('sync-status');
+            statusEl.style.display = 'block';
+            statusEl.innerHTML = '<div class="loader"></div> جاري الجلب...';
+
+            fetch(`${API_URL}/api/sync-from-github`, {method: 'POST'})
+                .then(r => r.json())
+                .then(data => {
+                    statusEl.innerHTML = `✅ ${data.message}<br><small>${new Date().toLocaleString('ar-EG')}</small>`;
+                    showAlert('✅ تم التحديث من GitHub بنجاح', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                })
+                .catch(e => {
+                    statusEl.innerHTML = '❌ خطأ في الجلب';
+                    showAlert('❌ خطأ: ' + e.message, 'error');
+                });
+        }
+
+        // عرض الرسائل
+        function showAlert(message, type = 'info') {
+            const alertsEl = document.getElementById('alerts');
+            const alertEl = document.createElement('div');
+            alertEl.className = `alert alert-${type}`;
+            alertEl.textContent = message;
+            alertsEl.appendChild(alertEl);
+            setTimeout(() => alertEl.remove(), 5000);
+        }
+
+        // تحميل البيانات عند فتح الصفحة
+        loadStatus();
+        setInterval(loadStatus, 30000); // تحديث كل 30 ثانية
+    </script>
+</body>
+</html>
